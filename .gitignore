@@ -1,0 +1,26 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+coverage/
+
+# Logs
+logs/
+*.log
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+
+# Secrets / Certificates
+*.pem
+*.key
+*.crt
