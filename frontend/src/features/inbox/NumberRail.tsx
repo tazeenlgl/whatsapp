@@ -31,7 +31,7 @@ export function NumberRail({ selectedAccountId, onSelectAccount, className = '' 
   }
 
   return (
-    <div className={`flex flex-col gap-1 overflow-y-auto ${className}`}>
+    <div className={`flex flex-col gap-1 overflow-x-hidden overflow-y-auto ${className}`}>
       {mockProjects.map((project) => {
         const accounts = mockWhatsAppAccounts.filter((account) => account.projectId === project.id)
         if (accounts.length === 0) return null
@@ -87,7 +87,8 @@ function NumberRow({
   return (
     <button
       onClick={onSelect}
-      className={`flex items-center gap-2 rounded-lg px-2.5 py-2 pl-4 text-left text-sm transition-colors ${
+      title={`${account.name} · ${account.phoneNumber}`}
+      className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-2 pl-4 text-left text-sm transition-colors ${
         selected
           ? 'bg-green-50 font-semibold text-green-800 ring-1 ring-inset ring-green-200'
           : 'text-slate-600 hover:bg-slate-100'
