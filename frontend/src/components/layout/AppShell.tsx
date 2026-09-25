@@ -5,18 +5,34 @@ import { Sidebar, type WhatsAppNavKey } from './Sidebar'
 interface AppShellProps {
   currentProject: Project
   activeWhatsAppNav?: WhatsAppNavKey
+  onNavigateWhatsApp?: (key: WhatsAppNavKey) => void
   userLabel: string
+  /** When true, main content fills the viewport height with no padding —
+   *  used by workspace screens (e.g. Inbox) that manage their own scroll. */
+  fullBleed?: boolean
   children: ReactNode
 }
 
-export function AppShell({ currentProject, activeWhatsAppNav, userLabel, children }: AppShellProps) {
+export function AppShell({
+  currentProject,
+  activeWhatsAppNav,
+  onNavigateWhatsApp,
+  userLabel,
+  fullBleed = false,
+  children,
+}: AppShellProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
+  function handleNavigate(key: WhatsAppNavKey) {
+    onNavigateWhatsApp?.(key)
+    setMobileNavOpen(false)
+  }
+
   return (
-    <div className="flex min-h-screen w-full bg-slate-50">
+    <div className="flex h-screen w-full overflow-hidden bg-slate-50">
       {/* Desktop sidebar */}
       <div className="hidden lg:block">
-        <Sidebar activeWhatsAppNav={activeWhatsAppNav} />
+        <Sidebar activeWhatsAppNav={activeWhatsAppNav} onNavigateWhatsApp={handleNavigate} />
       </div>
 
       {/* Mobile sidebar drawer */}
@@ -28,13 +44,13 @@ export function AppShell({ currentProject, activeWhatsAppNav, userLabel, childre
             onClick={() => setMobileNavOpen(false)}
           />
           <div className="relative h-full w-64">
-            <Sidebar activeWhatsAppNav={activeWhatsAppNav} />
+            <Sidebar activeWhatsAppNav={activeWhatsAppNav} onNavigateWhatsApp={handleNavigate} />
           </div>
         </div>
       )}
 
-      <div className="flex min-h-screen w-full min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
+      <div className="flex h-screen min-w-0 flex-1 flex-col">
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
               aria-label="Open menu"
@@ -74,7 +90,13 @@ export function AppShell({ currentProject, activeWhatsAppNav, userLabel, childre
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 sm:py-8">{children}</main>
+        <main
+          className={
+            fullBleed ? 'min-h-0 flex-1 overflow-hidden' : 'flex-1 overflow-y-auto px-4 py-6 sm:px-6 sm:py-8'
+          }
+        >
+          {children}
+        </main>
       </div>
     </div>
   )

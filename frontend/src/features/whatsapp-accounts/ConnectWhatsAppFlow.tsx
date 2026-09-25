@@ -31,6 +31,8 @@ interface ConnectWhatsAppFlowProps {
   currentProject: Project
   onClose: () => void
   onConnected: (account: WhatsAppAccount) => void
+  /** Called when the user clicks "Go to Inbox" on the success step. */
+  onGoToInbox?: (accountId: string) => void
 }
 
 /**
@@ -43,8 +45,10 @@ export function ConnectWhatsAppFlow({
   currentProject,
   onClose,
   onConnected,
+  onGoToInbox,
 }: ConnectWhatsAppFlowProps) {
   const [step, setStep] = useState<FlowStep>('connect-intro')
+  const [connectedAccountId, setConnectedAccountId] = useState<string | null>(null)
 
   // Mock form state — none of this is sent anywhere.
   const [metaEmail, setMetaEmail] = useState('')
@@ -70,13 +74,15 @@ export function ConnectWhatsAppFlow({
         ? mockPhoneNumberOptions.find((option) => option.id === selectedExistingPhone)?.label ?? ''
         : newPhoneNumber || '+91 00000 00000'
 
+    const accountId = `wa_${Date.now()}`
     onConnected({
-      id: `wa_${Date.now()}`,
+      id: accountId,
       projectId: currentProject.id,
       name: displayName || currentProject.name,
       phoneNumber: phoneLabel,
       status: 'active',
     })
+    setConnectedAccountId(accountId)
     setStep('connected')
   }
 
@@ -174,6 +180,14 @@ export function ConnectWhatsAppFlow({
               : newPhoneNumber
           }
           onDone={resetAndClose}
+          onGoToInbox={
+            onGoToInbox && connectedAccountId
+              ? () => {
+                  onGoToInbox(connectedAccountId)
+                  resetAndClose()
+                }
+              : undefined
+          }
         />
       )}
     </Modal>
@@ -552,10 +566,12 @@ function ConnectedStep({
   projectName,
   phoneNumber,
   onDone,
+  onGoToInbox,
 }: {
   projectName: string
   phoneNumber: string
   onDone: () => void
+  onGoToInbox?: () => void
 }) {
   return (
     <div className="flex flex-col gap-5">
@@ -574,7 +590,7 @@ function ConnectedStep({
           </div>
         }
         action={
-          <Button variant="whatsapp" onClick={onDone}>
+          <Button variant="whatsapp" onClick={onGoToInbox ?? onDone}>
             Go to Inbox →
           </Button>
         }

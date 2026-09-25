@@ -31,3 +31,59 @@ export interface PhoneNumberOption {
   id: string
   label: string
 }
+
+/**
+ * Inbox / Conversation domain — scoped one level below WhatsAppAccount:
+ *
+ * WhatsAppAccount (number) -> Contact -> Conversation -> Message
+ *
+ * A Contact, Conversation, or Message always carries the owning
+ * `whatsAppAccountId`. Nothing here is ever looked up without that scope —
+ * mirrors the number-wise isolation rule in CLAUDE.md Section 4.
+ */
+
+/** A contact known within a single WhatsApp number's isolated inbox. */
+export interface Contact {
+  id: string
+  whatsAppAccountId: string
+  name: string
+  phone: string
+  customerSince: string
+  tags: string[]
+  notes: string
+}
+
+export type MessageDirection = 'incoming' | 'outgoing'
+export type MessageKind = 'text' | 'image' | 'document'
+export type MessageStatus = 'sent' | 'delivered' | 'read'
+
+export interface Message {
+  id: string
+  conversationId: string
+  direction: MessageDirection
+  kind: MessageKind
+  text?: string
+  mediaLabel?: string
+  timestamp: string
+  status?: MessageStatus
+}
+
+export interface Conversation {
+  id: string
+  whatsAppAccountId: string
+  contactId: string
+  unreadCount: number
+  assignedToUserId?: string
+  archived: boolean
+}
+
+export type TransactionStatus = 'enquiry' | 'paid' | 'pending'
+
+export interface TransactionSummary {
+  id: string
+  code: string
+  title: string
+  amount: number
+  status: TransactionStatus
+  date: string
+}

@@ -18,8 +18,14 @@ export const mockProjects: Project[] = [
   { id: 'proj_yazin_pos', name: 'Yazin POS' },
   { id: 'proj_website_b', name: 'Website B' },
   { id: 'proj_website_c', name: 'Website C' },
+  { id: 'proj_internal', name: 'Internal' },
 ]
 
+/**
+ * Multiple isolated numbers can belong to the same project — each is a
+ * separate WhatsAppAccount with its own inbox, contacts, and conversations.
+ * Never assume one project has exactly one number.
+ */
 export const mockWhatsAppAccounts: WhatsAppAccount[] = [
   {
     id: 'wa_yazin_pos_1',
@@ -29,17 +35,38 @@ export const mockWhatsAppAccounts: WhatsAppAccount[] = [
     status: 'active',
   },
   {
+    id: 'wa_yazin_pos_2',
+    projectId: 'proj_yazin_pos',
+    name: 'Yazin POS',
+    phoneNumber: '+91 98765 43210',
+    status: 'active',
+  },
+  {
     id: 'wa_website_b_1',
     projectId: 'proj_website_b',
     name: 'Website B',
-    phoneNumber: '+91 98765 43210',
+    phoneNumber: '+91 91234 56789',
     status: 'active',
   },
   {
     id: 'wa_website_c_1',
     projectId: 'proj_website_c',
     name: 'Website C',
-    phoneNumber: '+91 91234 56789',
+    phoneNumber: '+91 99887 76655',
+    status: 'active',
+  },
+  {
+    id: 'wa_website_c_2',
+    projectId: 'proj_website_c',
+    name: 'Website C',
+    phoneNumber: '+91 90123 44556',
+    status: 'active',
+  },
+  {
+    id: 'wa_internal_1',
+    projectId: 'proj_internal',
+    name: 'Internal',
+    phoneNumber: '+91 90909 09090',
     status: 'active',
   },
 ]

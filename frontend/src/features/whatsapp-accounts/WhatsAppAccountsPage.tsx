@@ -12,6 +12,7 @@ function statusTone(status: WhatsAppAccountStatus) {
 
 interface WhatsAppAccountsPageProps {
   currentProject: Project
+  onOpenInbox?: (accountId: string) => void
 }
 
 /**
@@ -19,7 +20,7 @@ interface WhatsAppAccountsPageProps {
  * point. Accounts shown here are scoped to the current project only —
  * this list must never mix accounts from other projects.
  */
-export function WhatsAppAccountsPage({ currentProject }: WhatsAppAccountsPageProps) {
+export function WhatsAppAccountsPage({ currentProject, onOpenInbox }: WhatsAppAccountsPageProps) {
   const [accounts, setAccounts] = useState<WhatsAppAccount[]>(
     mockWhatsAppAccounts.filter((account) => account.projectId === currentProject.id),
   )
@@ -73,7 +74,13 @@ export function WhatsAppAccountsPage({ currentProject }: WhatsAppAccountsPagePro
             </thead>
             <tbody>
               {accounts.map((account) => (
-                <tr key={account.id} className="border-b border-slate-100 last:border-0">
+                <tr
+                  key={account.id}
+                  onClick={() => onOpenInbox?.(account.id)}
+                  className={`border-b border-slate-100 last:border-0 ${
+                    onOpenInbox ? 'cursor-pointer hover:bg-slate-50' : ''
+                  }`}
+                >
                   <td className="px-6 py-4 font-medium text-slate-900">{account.name}</td>
                   <td className="px-6 py-4 text-slate-600">{account.phoneNumber}</td>
                   <td className="px-6 py-4">
@@ -94,6 +101,7 @@ export function WhatsAppAccountsPage({ currentProject }: WhatsAppAccountsPagePro
         currentProject={currentProject}
         onClose={() => setFlowOpen(false)}
         onConnected={handleConnected}
+        onGoToInbox={onOpenInbox}
       />
     </div>
   )
